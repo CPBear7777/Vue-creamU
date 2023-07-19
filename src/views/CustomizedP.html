@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Product</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+      var unityInstance = UnityLoader.instantiate("unityContainer", "Build/WebGL2.json", {onProgress: UnityProgress});
+    </script>
+    <script>
+      var recaptureInputAndFocus = function () {
+        var canvas = document.getElementById("#canvas");
+        if (canvas) {
+          canvas.setAttribute("tabindex", "1");
+          canvas.focus();
+        } else setTimeout(recaptureInputAndFocus, 100);
+      };
+      recaptureInputAndFocus();
+    </script>
+  </head>
+  <body>
+    <div class="webgl-content">
+      <div id="unityContainer" style="width: 960px; height: 540px"></div>
+      <table>
+          <tr>
+            <th class="type">Data</th>
+            <th>Component</th>
+            <th>Material</th>
+          </tr>
+          <tr>
+            <td>Head:</td>
+            <td id="head"></td>
+            <td id="head_M"></td>
+          </tr>
+          <tr>
+            <td>Body:</td>
+            <td id="body"></td>
+            <td id="body_M"></td>
+          </tr>
+          <tr>
+            <td>RightHand:</td>
+            <td id="rhand"></td>
+            <td id="rhand_M"></td>
+          </tr>
+          <tr>
+            <td>LeftHand:</td>
+            <td id="lhand"></td>
+            <td id="lhand_M"></td>
+          </tr>
+          <tr>
+            <td>RightFoot:</td>
+            <td id="rfoot"></td>
+            <td id="rfoot_M"></td>
+          </tr>
+          <tr>
+            <td>LeftFoot:</td>
+            <td id="lfoot"></td>
+            <td id="lfoot_M"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
