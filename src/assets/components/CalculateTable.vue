@@ -11,6 +11,7 @@
         <th class="text-center">Material-Price</th>
         <th class="text-center">=</th>
         <th class="text-center">SubTotal</th>
+        <th class="text-center">ComponentId</th>
       </tr>
     </thead>
     <tbody>
@@ -23,6 +24,7 @@
         <td id="">{{ head_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ head_mo_price + head_m_price }}</td>
+        <td id="">{{ cId }}</td>
       </tr>
       <tr>
         <td class="text-left">Body:</td>
@@ -79,14 +81,24 @@
   <p id="total">Total:{{ calculateSum() }}</p>
   <br />
   <v-row justify="end">
-    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="AddToCart">Buy Now</v-btn>
-    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
+    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="AddToCart"
+      >Buy Now</v-btn
+    >
+    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="Cclean"
+      >Delete</v-btn
+    >
   </v-row>
 </template>
 
 <script>
+//有setup就可以省掉return
+import { ref } from "vue";
+
+const components = [];
+
 export default {
-  data() {//初始值
+  data() {
+    //初始值
     return {
       datas: {},
       head_mo_price: 0,
@@ -106,11 +118,12 @@ export default {
       headId: 300006,
       head_m_Id: 200001,
 
-      componentId: 0,
+      cId: 0,
     };
   },
-  
-  mounted() {//model+material=component的價格
+
+  mounted() {
+    //model+material=component的價格
     const sigh = async () => {
       try {
         //Model
@@ -125,14 +138,14 @@ export default {
         const lhField = document.getElementById("lhand");
         const rfField = document.getElementById("rfoot");
         const lfField = document.getElementById("lfoot");
-        
+
         this.head_mo_price = this.datas[headField.innerText].price;
         this.body_mo_price = this.datas[bodyField.innerText].price;
         this.rhand_mo_price = this.datas[rhField.innerText].price;
         this.lhand_mo_price = this.datas[lhField.innerText].price;
         this.rfoot_mo_price = this.datas[rfField.innerText].price;
         this.lfoot_mo_price = this.datas[lfField.innerText].price;
-        
+
         this.headId = this.datas[headField.innerText].modelId;
         this.bodyId = this.datas[bodyField.innerText].modelId;
         this.rhandId = this.datas[rhField.innerText].modelId;
@@ -161,8 +174,6 @@ export default {
         this.lhand_m_Id = this.datas[lhMtrl.innerText].materialId;
         this.rfoot_m_Id = this.datas[rfMtrl.innerText].materialId;
         this.lfoot_m_Id = this.datas[lfMtrl.innerText].materialId;
-
-        
       } catch (error) {}
     };
     const loadDB = async () => {
@@ -178,8 +189,7 @@ export default {
       (await res3.json()).forEach((element) => {
         this.datas[element.componentName] = element;
       });*/
-    
-      
+
       //   (v) => {};
       //this.datas["Wood034"] = { price: 87 };
       //this.datas["Wood018"] = { price: 78 };
@@ -194,75 +204,61 @@ export default {
       }, 100);
     };
     const getComponent = async () => {
-      /*const res4 = await fetch(`https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`);
-      (await res4.json()).forEach((element) => {
-        this.datas[element.componentName] = element;
-      });
-      console.log("啊" + this.datas[headField.innerText].headId);
-
-      return await res4.json();*/
       try {
-    const res4 = await fetch(`https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`);
-    const componentData = await res4.json();
+        const res4 = await fetch(
+          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
+        );
+        const datas = await res4.json();
+        console.log(datas);
+        components.value = datas;
 
-    // 將取得的資料儲存至 this.datas 物件中
-    componentData.forEach((element) => {
-      this.datas[element.componentName] = element;
-    });
-
-    // 顯示特定資料，例如 headField.innerText 的 headId
-    console.log("啊" + this.datas[headField.innerText].headId);
-
-    // 回傳 API 回應的資料
-    return componentData;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+        console.log(components.value[0].componentId);
+        this.cId = components.value[0].componentId;
+        // 回傳 API 回應的資料
+        return components;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
     };
     loadDB();
     getComponent();
   },
-  methods: {//算總數
+  methods: {
+    //算總數
     calculateSum() {
       let sum = 0;
       const variables = Object.keys(this.$data);
       for (let i = 0; i < 12; i++) {
         const variable = variables[i];
-        if (typeof this.$data[variable] === 'number') {
+        if (typeof this.$data[variable] === "number") {
           sum += this.$data[variable];
         }
       }
       return sum;
     },
-    //addToCart(){
-      //console.log('按鈕被點擊了！');
-      //let storage = localStorage
-      //storage['addItemList'] = ''
-    //}
-    AddToCart(){
+    AddToCart() {
       const data = this.headId;
       //localStorage.setItem('data2',data);
 
-      alert('已存'+data);
+      alert("已存" + data);
     },
-    Cclean(){
-      localStorage.removeItem('data2');
-      this.head_m_price='';
-      alert('已清除');
-    }
+    Cclean() {
+      localStorage.removeItem("data2");
+      this.head_m_price = "";
+      alert("已清除");
     },
-    created() {
-      const sum = this.calculateSum();
-      console.log(sum);
-    },
-  
+  },
+  created() {
+    const sum = this.calculateSum();
+    console.log(sum);
+  },
 };
 </script>
 
 <style csope>
-#total{
-  font-size:30px;
+#total {
+  font-size: 30px;
   text-align: right;
-};
+}
 </style>
