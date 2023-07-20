@@ -79,7 +79,8 @@
   <p id="total">Total:{{ calculateSum() }}</p>
   <br />
   <v-row justify="end">
-    <v-btn id="btn" size="x-large" color="#e5d2ab">Buy Now</v-btn>
+    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="AddToCart">Buy Now</v-btn>
+    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
   </v-row>
 </template>
 
@@ -101,6 +102,11 @@ export default {
       rfoot_m_price: 0,
       lfoot_mo_price: 0,
       lfoot_m_price: 0,
+
+      headId: 300006,
+      head_m_Id: 200001,
+
+      componentId: 0,
     };
   },
   
@@ -113,18 +119,26 @@ export default {
         const headField = document.getElementById("head");
         if (!headField) return;
         //變數=標籤的內容的price
-        this.head_mo_price = this.datas[headField.innerText].price;
         //   console.log(`head_mo_price: ${this.head_mo_price}`);
         const bodyField = document.getElementById("body");
-        this.body_mo_price = this.datas[bodyField.innerText].price;
         const rhField = document.getElementById("rhand");
-        this.rhand_mo_price = this.datas[rhField.innerText].price;
         const lhField = document.getElementById("lhand");
-        this.lhand_mo_price = this.datas[lhField.innerText].price;
         const rfField = document.getElementById("rfoot");
-        this.rfoot_mo_price = this.datas[rfField.innerText].price;
         const lfField = document.getElementById("lfoot");
+        
+        this.head_mo_price = this.datas[headField.innerText].price;
+        this.body_mo_price = this.datas[bodyField.innerText].price;
+        this.rhand_mo_price = this.datas[rhField.innerText].price;
+        this.lhand_mo_price = this.datas[lhField.innerText].price;
+        this.rfoot_mo_price = this.datas[rfField.innerText].price;
         this.lfoot_mo_price = this.datas[lfField.innerText].price;
+        
+        this.headId = this.datas[headField.innerText].modelId;
+        this.bodyId = this.datas[bodyField.innerText].modelId;
+        this.rhandId = this.datas[rhField.innerText].modelId;
+        this.lhandId = this.datas[lhField.innerText].modelId;
+        this.rfootId = this.datas[rfField.innerText].modelId;
+        this.lfootId = this.datas[lfField.innerText].modelId;
 
         //Material
         const headMtrl = document.getElementById("head_M");
@@ -140,6 +154,15 @@ export default {
         this.lhand_m_price = this.datas[lhMtrl.innerText].price;
         this.rfoot_m_price = this.datas[rfMtrl.innerText].price;
         this.lfoot_m_price = this.datas[lfMtrl.innerText].price;
+
+        this.head_m_Id = this.datas[headMtrl.innerText].materialId;
+        this.body_m_Id = this.datas[bodyMtrl.innerText].materialId;
+        this.rhand_m_Id = this.datas[rhMtrl.innerText].materialId;
+        this.lhand_m_Id = this.datas[lhMtrl.innerText].materialId;
+        this.rfoot_m_Id = this.datas[rfMtrl.innerText].materialId;
+        this.lfoot_m_Id = this.datas[lfMtrl.innerText].materialId;
+
+        
       } catch (error) {}
     };
     const loadDB = async () => {
@@ -151,6 +174,12 @@ export default {
       (await res2.json()).forEach((element) => {
         this.datas[element.materialName] = element;
       });
+      /*const res3 = await fetch(`https://localhost:7011/api/Component`);
+      (await res3.json()).forEach((element) => {
+        this.datas[element.componentName] = element;
+      });*/
+    
+      
       //   (v) => {};
       //this.datas["Wood034"] = { price: 87 };
       //this.datas["Wood018"] = { price: 78 };
@@ -164,13 +193,41 @@ export default {
         // clearInterval(intervalId);
       }, 100);
     };
+    const getComponent = async () => {
+      /*const res4 = await fetch(`https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`);
+      (await res4.json()).forEach((element) => {
+        this.datas[element.componentName] = element;
+      });
+      console.log("啊" + this.datas[headField.innerText].headId);
+
+      return await res4.json();*/
+      try {
+    const res4 = await fetch(`https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`);
+    const componentData = await res4.json();
+
+    // 將取得的資料儲存至 this.datas 物件中
+    componentData.forEach((element) => {
+      this.datas[element.componentName] = element;
+    });
+
+    // 顯示特定資料，例如 headField.innerText 的 headId
+    console.log("啊" + this.datas[headField.innerText].headId);
+
+    // 回傳 API 回應的資料
+    return componentData;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+    };
     loadDB();
+    getComponent();
   },
   methods: {//算總數
     calculateSum() {
       let sum = 0;
       const variables = Object.keys(this.$data);
-      for (let i = 0; i < variables.length; i++) {
+      for (let i = 0; i < 12; i++) {
         const variable = variables[i];
         if (typeof this.$data[variable] === 'number') {
           sum += this.$data[variable];
@@ -178,17 +235,28 @@ export default {
       }
       return sum;
     },
-    addToCart(){
+    //addToCart(){
       //console.log('按鈕被點擊了！');
       //let storage = localStorage
       //storage['addItemList'] = ''
+    //}
+    AddToCart(){
+      const data = this.headId;
+      //localStorage.setItem('data2',data);
+
+      alert('已存'+data);
+    },
+    Cclean(){
+      localStorage.removeItem('data2');
+      this.head_m_price='';
+      alert('已清除');
     }
-    
-  },
-  created() {
-    const sum = this.calculateSum();
-    console.log(sum);
-  },
+    },
+    created() {
+      const sum = this.calculateSum();
+      console.log(sum);
+    },
+  
 };
 </script>
 
