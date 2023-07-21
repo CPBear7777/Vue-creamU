@@ -23,6 +23,8 @@
         </div>
         <br />
         <CalculateTable></CalculateTable>
+
+        <CalculateTable2></CalculateTable2>
         
         <br />
         <Info></Info>
@@ -72,6 +74,7 @@ export default {
 
 <script setup>
 import CalculateTable from "../assets/components/CalculateTable.vue";
+import CalculateTable2 from "../assets/components/CalculateTable2.vue";
 import Info from "../assets/components/Info.vue";
 </script>
 

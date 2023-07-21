@@ -8,7 +8,7 @@
     -->
     <router-link to="/">Go to Product Review</router-link> /
     <router-link to="/Message">Send Message</router-link> /
-    <router-link to="/WebGL2">WebGL2</router-link>
+    <router-link to="/WebGL2">WebGL2</router-link> / 
   </header>
 
   <main>

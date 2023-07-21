@@ -17,6 +17,7 @@
       </tr>
     </thead>
     <tbody>
+      
       <tr>
         <td class="text-left">Head:</td>
         <td id="">{{ headId }}</td>
@@ -94,14 +95,13 @@
   </v-row>
 </template>
 
-<script >
+<script>
 //有setup就可以省掉return
 import { ref } from "vue";
 
 const components = [];
 
 export default {
-  
   data() {
     //初始值
     return {
@@ -120,22 +120,30 @@ export default {
       lfoot_mo_price: 0,
       lfoot_m_price: 0,
 
-
-      headId: 300006,
-      bodyId: 0,
-      rhandId: 0,
-      lhandId: 0,
-      rfootId: 0,
-      lfootId: 0,
       
+      headId: 300006,
       head_m_Id: 200001,
-      body_m_Id: 0,
-      rhand_m_Id: 0,
-      lhand_m_Id: 0,
-      rfoot_m_Id: 0,
-      lfoot_m_Id: 0,
 
       cId: 0,
+
+      items: [
+        {
+          name: 'Head',
+          m_id: 'head',
+          m_price: 0,
+          mo_id: '',
+          mo_price: 0,
+          M: 0,
+        },
+        {
+          name: 'Body',
+          m_id: 'body',
+          m_price: 0,
+          mo_price: 0,
+          M: 0,
+        },
+        // Add more items for other body parts as needed
+      ],
     };
   },
 
@@ -220,19 +228,16 @@ export default {
         // clearInterval(intervalId);
       }, 100);
     };
-    loadDB();
-  },
-  updated(){
     const getComponent = async () => {
       try {
         const res4 = await fetch(
           `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
         );
         const datas = await res4.json();
-        console.log("datas", datas);
+        console.log(datas);
         components.value = datas;
 
-        console.log(`components.value[0].componentId:${components.value[0].componentId}`);
+        console.log(components.value[0].componentId);
         this.cId = components.value[0].componentId;
         // 回傳 API 回應的資料
         return components;
@@ -241,6 +246,7 @@ export default {
         return null;
       }
     };
+    loadDB();
     getComponent();
   },
   methods: {
