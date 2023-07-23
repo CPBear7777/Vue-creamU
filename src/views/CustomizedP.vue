@@ -21,11 +21,19 @@
           <!--class="webgl-content"-->
           <div id="unityContainer" style="width: 960px; height: 540px"></div>
         </div>
+        <v-btn
+          id="bscreenshottn"
+          type="button"
+          size="x-large"
+          color="#e5d2ab"
+          @click=""
+          >Save</v-btn
+        >
         <br />
         <CalculateTable></CalculateTable>
 
         <CalculateTable2></CalculateTable2>
-        
+
         <br />
         <Info></Info>
       </v-col>
@@ -68,6 +76,26 @@ export default {
         clearInterval(checkIntervalId);
       }
     }, 500);
+
+    //截圖功能
+    const elem = document.querySelector("#screenshot");
+    elem.addEventListener("click", () => {
+      canvas.toBlob((blob) => {
+        saveBlob(blob, `screencapture-${canvas.width}x${canvas.height}.png`);
+      });
+    });
+
+    const saveBlob = (function () {
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style.display = "none";
+      return function saveData(blob, fileName) {
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+      };
+    })();
   },
 };
 </script>
