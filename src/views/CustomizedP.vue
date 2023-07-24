@@ -22,13 +22,14 @@
           <div id="unityContainer" style="width: 960px; height: 540px"></div>
         </div>
         <v-btn
-          id="bscreenshottn"
+          id="screenshot"
           type="button"
           size="x-large"
           color="#e5d2ab"
-          @click=""
+          @click="captureScreenshot"
           >Save</v-btn
         >
+        <img id="capturedImage" src="" alt="Captured Screenshot" />
         <br />
         <CalculateTable></CalculateTable>
 
@@ -57,10 +58,14 @@ export default {
       const unityInstance = UnityLoader.instantiate(
         "unityContainer",
         "Build/WebGL0619.json", //Unity有換檔案要改這裡，還有public裡的檔案
-        { onProgress: UnityProgress }
+        { onProgress: UnityProgress,
+          Module: {
+          webglContextAttributes: {"preserveDrawingBuffer": true},//用於截圖的設定
+        } }
       );
       const recaptureInputAndFocus = () => {
         var canvas = document.getElementById("canvas");
+        
         if (canvas) {
           canvas.setAttribute("tabindex", "1");
           canvas.focus();
@@ -76,11 +81,18 @@ export default {
         clearInterval(checkIntervalId);
       }
     }, 500);
-
+    /*//https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-tips.html
     //截圖功能
+    //找報button並賦予監聽事件
+    //監聽事件：把<canvas>元素的內容轉化為Blob對象(二進制數據，用於保存截圖)
     const elem = document.querySelector("#screenshot");
+    //let needCapture = false;
     elem.addEventListener("click", () => {
-      canvas.toBlob((blob) => {
+      //needCapture = true;
+      drawScene();
+      canvas.toBlob((blob) => {//回調函數中的 blob 參數即为截图的 Blob 对象。
+        //指定要存的檔案名稱
+        //會在<body>內先創建一個隱藏的<a>標籤，href內設置為截圖的BlobL
         saveBlob(blob, `screencapture-${canvas.width}x${canvas.height}.png`);
       });
     });
@@ -96,6 +108,36 @@ export default {
         a.click();
       };
     })();
+
+    const drawScene = (function (item){
+      if (needCapture) {
+        needCapture = false;
+        canvas.toBlob((blob) => {
+          saveBlob(blob, `screencapture-${canvas.width}x${canvas.height}.png`);
+        });
+      }
+    })();*/    
+  },
+  
+  methods: {
+    //截圖功能
+    captureScreenshot() {
+      //找到button
+      const elem = document.querySelector('#screenshot');
+      // 获取 WebGL 渲染的 <canvas> 元素
+      const canvas = document.getElementById("canvas"); 
+      const capturedImage = document.querySelector('#capturedImage');
+      let capturedBlob = null; // 变量用於儲存截圖的 Blob 对象
+      elem.addEventListener('click', () => {
+        canvas.toBlob((blob) => {
+          capturedBlob = blob; // 將截圖的 Blob 儲存到 capturedBlob 中
+
+          // 將 Blob 轉換成臨時的 URL 並顯示
+          const blobUrl = URL.createObjectURL(capturedBlob);
+          capturedImage.src = blobUrl;
+        });
+      });
+    },
   },
 };
 </script>

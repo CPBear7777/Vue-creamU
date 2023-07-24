@@ -3,7 +3,7 @@
   <v-table class="text-center">
     <thead>
       <tr>
-        <th class="text-left">Body Part</th>
+        <th class="text-right padding-right" >Body Part</th>
         <th class="text-center">ModelId</th>
         <th class="text-center">Model</th>
         <th class="text-center">Model-Price</th>
@@ -18,7 +18,7 @@
     </thead>
     <tbody>
       <tr>
-        <td class="text-left">Head:</td>
+        <td class="text-right">Head</td>
         <td id="">{{ headId }}</td>
         <td id="head"></td>
         <td id="">{{ head_mo_price }}</td>
@@ -28,57 +28,72 @@
         <td id="">{{ head_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ head_mo_price + head_m_price }}</td>
-        <td id="">{{ cId }}</td>
+        <td id="">{{ com_head_Id }}</td>
       </tr>
       <tr>
-        <td class="text-left">Body:</td>
+        <td class="text-right">Body</td>
+        <td id="">{{ bodyId }}</td>
         <td id="body"></td>
         <td id="">{{ body_mo_price }}</td>
         <td id="">+</td>
+        <td id="">{{ body_m_Id }}</td>
         <td id="body_M"></td>
         <td id="">{{ body_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ body_mo_price + body_m_price }}</td>
+        <td id="">{{ component.c_body_Id }}</td>
       </tr>
       <tr>
-        <td class="text-left">Right Hand:</td>
+        <td class="text-right">Right Hand</td>
+        <td id="">{{ rhandId }}</td>
         <td id="rhand"></td>
         <td id="">{{ rhand_mo_price }}</td>
         <td id="">+</td>
+        <td id="">{{ rhand_m_Id }}</td>
         <td id="rhand_M"></td>
         <td id="">{{ rhand_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ rhand_mo_price + rhand_m_price }}</td>
+        <td id="">{{ component.c_rhand_Id }}</td>
       </tr>
       <tr>
-        <td class="text-left">Left Hand:</td>
+        <td class="text-right">Left Hand</td>
+        <td id="">{{ lhandId }}</td>
         <td id="lhand"></td>
         <td id="">{{ lhand_mo_price }}</td>
         <td id="">+</td>
+        <td id="">{{ lhand_m_Id }}</td>
         <td id="lhand_M"></td>
         <td id="">{{ lhand_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ lhand_mo_price + lhand_m_price }}</td>
+        <td id="">{{ component.c_lhand_Id }}</td>
       </tr>
       <tr>
-        <td class="text-left">Right Foot:</td>
+        <td class="text-right">Right Foot</td>
+        <td id="">{{ rfootId }}</td>
         <td id="rfoot"></td>
         <td id="">{{ rfoot_mo_price }}</td>
         <td id="">+</td>
+        <td id="">{{ rfoot_m_Id }}</td>
         <td id="rfoot_M"></td>
         <td id="">{{ rfoot_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ rfoot_mo_price + rfoot_m_price }}</td>
+        <td id="">{{ component.c_rfoot_Id }}</td>
       </tr>
       <tr>
-        <td class="text-left">Left Foot:</td>
+        <td class="text-right">Left Foot</td>
+        <td id="">{{ lfootId }}</td>
         <td id="lfoot"></td>
         <td id="">{{ lfoot_mo_price }}</td>
         <td id="">+</td>
+        <td id="">{{ lfoot_m_Id }}</td>
         <td id="lfoot_M"></td>
         <td id="">{{ lfoot_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ lfoot_mo_price + lfoot_m_price }}</td>
+        <td id="">{{ component.c_lfoot_Id }}</td>
       </tr>
     </tbody>
   </v-table>
@@ -120,22 +135,34 @@ export default {
       lfoot_mo_price: 0,
       lfoot_m_price: 0,
 
-
-      headId: 300006,
+      moId:{
+        headId: 300006,
       bodyId: 0,
       rhandId: 0,
       lhandId: 0,
       rfootId: 0,
       lfootId: 0,
+      },
       
-      head_m_Id: 200001,
+      maId:{
+        head_m_Id: 200001,
       body_m_Id: 0,
       rhand_m_Id: 0,
       lhand_m_Id: 0,
       rfoot_m_Id: 0,
       lfoot_m_Id: 0,
+      },
+      
 
-      cId: 0,
+      com_head_Id: 0,
+      component:{
+        c_head_Id: 0,
+        c_body_Id: 0,
+        c_rhand_Id: 0,
+        c_lhand_Id: 0,
+        c_rfoot_Id: 0,
+        c_lfoot_Id: 0,
+      }
     };
   },
 
@@ -225,6 +252,28 @@ export default {
   updated(){
     const getComponent = async () => {
       try {
+        /*Object.keys(this.component).forEach(async(key) => {
+          console.log(`${key}: ${this.component[key]}`)
+          const res4 = await fetch(
+          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
+        );
+      })*/
+      const moIdKeys = Object.keys(this.moId[i]);
+      const maIdKeys = Object.keys(this.maId[i]);
+      const comIdKeys = Object.keys(this.component[i]);
+        for(let i = 0;i < 6; i++){
+          const mokey = moIdKeys[i];
+          const makey = maIdKeys[i];
+          const comkey = comIdKeys[i];
+          const res = await fetch(
+          `https://localhost:7011/api/Components/model/${this.moId[mokey]}/material/${this.maId[makey]}`
+          );
+          const data = await res.json();
+          this.component[comkey] = data;
+          console.log(data)
+          //this.component[i] = data;
+          //console.log(this.component[i].value) 
+        }
         const res4 = await fetch(
           `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
         );
@@ -233,7 +282,7 @@ export default {
         components.value = datas;
 
         console.log(`components.value[0].componentId:${components.value[0].componentId}`);
-        this.cId = components.value[0].componentId;
+        this.com_head_Id = components.value[0].componentId;
         // 回傳 API 回應的資料
         return components;
       } catch (error) {
@@ -279,5 +328,13 @@ export default {
 #total {
   font-size: 30px;
   text-align: right;
+}
+th:first-child {
+  border-right: 1px solid 	#ADADAD;
+  background-color: 	#ADADAD;
+}
+td:first-child {
+  border-right: 1px solid 	#ADADAD;
+  background-color: 	#ADADAD;
 }
 </style>
