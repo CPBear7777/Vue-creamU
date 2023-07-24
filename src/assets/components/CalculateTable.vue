@@ -3,7 +3,7 @@
   <v-table class="text-center">
     <thead>
       <tr>
-        <th class="text-right padding-right" >Body Part</th>
+        <th class="text-right padding-right">Body Part</th>
         <th class="text-center">ModelId</th>
         <th class="text-center">Model</th>
         <th class="text-center">Model-Price</th>
@@ -19,16 +19,16 @@
     <tbody>
       <tr>
         <td class="text-right">Head</td>
-        <td id="">{{ headId }}</td>
+        <td id="">{{ moId.headId }}</td>
         <td id="head"></td>
         <td id="">{{ head_mo_price }}</td>
         <td id="">+</td>
-        <td id="">{{ head_m_Id }}</td>
+        <td id="">{{ maId.head_m_Id }}</td>
         <td id="head_M"></td>
         <td id="">{{ head_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ head_mo_price + head_m_price }}</td>
-        <td id="">{{ com_head_Id }}</td>
+        <td id="">{{ comId.c_head_Id }}</td>
       </tr>
       <tr>
         <td class="text-right">Body</td>
@@ -41,7 +41,7 @@
         <td id="">{{ body_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ body_mo_price + body_m_price }}</td>
-        <td id="">{{ component.c_body_Id }}</td>
+        <td id="">{{ comId.c_body_Id }}</td>
       </tr>
       <tr>
         <td class="text-right">Right Hand</td>
@@ -54,7 +54,7 @@
         <td id="">{{ rhand_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ rhand_mo_price + rhand_m_price }}</td>
-        <td id="">{{ component.c_rhand_Id }}</td>
+        <td id="">{{ comId.c_rhand_Id }}</td>
       </tr>
       <tr>
         <td class="text-right">Left Hand</td>
@@ -67,7 +67,7 @@
         <td id="">{{ lhand_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ lhand_mo_price + lhand_m_price }}</td>
-        <td id="">{{ component.c_lhand_Id }}</td>
+        <td id="">{{ comId.c_lhand_Id }}</td>
       </tr>
       <tr>
         <td class="text-right">Right Foot</td>
@@ -80,7 +80,7 @@
         <td id="">{{ rfoot_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ rfoot_mo_price + rfoot_m_price }}</td>
-        <td id="">{{ component.c_rfoot_Id }}</td>
+        <td id="">{{ comId.c_rfoot_Id }}</td>
       </tr>
       <tr>
         <td class="text-right">Left Foot</td>
@@ -93,7 +93,7 @@
         <td id="">{{ lfoot_m_price }}</td>
         <td id="">=</td>
         <td id="">{{ lfoot_mo_price + lfoot_m_price }}</td>
-        <td id="">{{ component.c_lfoot_Id }}</td>
+        <td id="">{{ comId.c_lfoot_Id }}</td>
       </tr>
     </tbody>
   </v-table>
@@ -109,14 +109,13 @@
   </v-row>
 </template>
 
-<script >
+<script>
 //有setup就可以省掉return
 import { ref } from "vue";
 
 const components = [];
 
 export default {
-  
   data() {
     //初始值
     return {
@@ -135,34 +134,33 @@ export default {
       lfoot_mo_price: 0,
       lfoot_m_price: 0,
 
-      moId:{
+      moId: {
         headId: 300006,
-      bodyId: 0,
-      rhandId: 0,
-      lhandId: 0,
-      rfootId: 0,
-      lfootId: 0,
+        bodyId: 300007,
+        rhandId: 300008,
+        lhandId: 300009,
+        rfootId: 300010,
+        lfootId: 300011,
       },
-      
-      maId:{
+
+      maId: {
         head_m_Id: 200001,
-      body_m_Id: 0,
-      rhand_m_Id: 0,
-      lhand_m_Id: 0,
-      rfoot_m_Id: 0,
-      lfoot_m_Id: 0,
+        body_m_Id: 200001,
+        rhand_m_Id: 200001,
+        lhand_m_Id: 200001,
+        rfoot_m_Id: 200001,
+        lfoot_m_Id: 200001,
       },
-      
 
       com_head_Id: 0,
-      component:{
+      comId: {
         c_head_Id: 0,
         c_body_Id: 0,
         c_rhand_Id: 0,
         c_lhand_Id: 0,
         c_rfoot_Id: 0,
         c_lfoot_Id: 0,
-      }
+      },
     };
   },
 
@@ -249,42 +247,136 @@ export default {
     };
     loadDB();
   },
-  updated(){
+  /*computed: {
+    // 计算属性用于显示 comId 对象中的属性值
+    display_c_head_Id() {
+      return this.comId.c_head_Id;
+    },
+    display_c_body_Id() {
+      return this.comId.c_body_Id;
+    },
+    // 其他属性的计算属性
+  },*/
+  updated() {
+    //const moIdKeys = Object.keys(this.moId);
+    //const maIdKeys = Object.keys(this.maId);
+    //const comIdKeys = Object.keys(this.comId);
     const getComponent = async () => {
       try {
-        /*Object.keys(this.component).forEach(async(key) => {
-          console.log(`${key}: ${this.component[key]}`)
-          const res4 = await fetch(
-          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
-        );
-      })*/
-      const moIdKeys = Object.keys(this.moId[i]);
-      const maIdKeys = Object.keys(this.maId[i]);
-      const comIdKeys = Object.keys(this.component[i]);
-        for(let i = 0;i < 6; i++){
+        //會無法即時更新，猜測是因為只能抓到預設值，如果想要抓到即時更新的值，就要從標籤那邊抓
+        /*for (let i = 0; i < 6; i++) {
           const mokey = moIdKeys[i];
           const makey = maIdKeys[i];
           const comkey = comIdKeys[i];
+          console.log("1." + this.moId[mokey] + "2." + this.maId[makey]);
           const res = await fetch(
-          `https://localhost:7011/api/Components/model/${this.moId[mokey]}/material/${this.maId[makey]}`
+            `https://localhost:7011/api/Components/model/${this.moId[mokey]}/material/${this.maId[makey]}`
           );
           const data = await res.json();
-          this.component[comkey] = data;
-          console.log(data)
-          //this.component[i] = data;
-          //console.log(this.component[i].value) 
-        }
-        const res4 = await fetch(
+          components.value = data;
+          console.log(
+            `components.value[0].componentId:${components.value[0].componentId}`
+          );
+          this.comId[comkey] = components.value[0].componentId;
+        }*/
+        //這方法太慢
+        /*const res4 = await fetch(
           `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
         );
         const datas = await res4.json();
         console.log("datas", datas);
+        //console.log("what is components?", components);
         components.value = datas;
 
-        console.log(`components.value[0].componentId:${components.value[0].componentId}`);
+        console.log(
+          `components.value[0].componentId:${components.value[0].componentId}`
+        );
         this.com_head_Id = components.value[0].componentId;
         // 回傳 API 回應的資料
-        return components;
+        return components;*/
+        // 以 moId.headId 和 maId.head_m_Id 的值为例，获取对应的 comId.c_head_Id 的值
+        /*const res4 = await fetch(
+          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
+        );
+
+        // 解析 API 返回的数据
+        const data = await res4.json();
+
+        // 将对应的 comId 的值更新为获取的数据中的 componentId
+        this.comId.c_head_Id = data[0].componentId;
+
+        // 对于其他的部位，重复相同的步骤
+        const resBody = await fetch(
+          `https://localhost:7011/api/Components/model/${this.bodyId}/material/${this.body_m_Id}`
+        );
+        const dataBody = await resBody.json();
+        this.comId.c_body_Id = dataBody[0].componentId;
+
+        const resRhand = await fetch(
+          `https://localhost:7011/api/Components/model/${this.rhandId}/material/${this.rhand_m_Id}`
+        );
+        const dataRhand = await resRhand.json();
+        this.comId.c_rhand_Id = dataRhand[0].componentId;
+
+        const resLhand = await fetch(
+          `https://localhost:7011/api/Components/model/${this.lhandId}/material/${this.lhand_m_Id}`
+        );
+        const dataLhand = await resLhand.json();
+        this.comId.c_lhand_Id = dataLhand[0].componentId;
+
+        const resRfoot = await fetch(
+          `https://localhost:7011/api/Components/model/${this.rfootId}/material/${this.rfoot_m_Id}`
+        );
+        const dataRfoot = await resRfoot.json();
+        this.comId.c_rfoot_Id = dataRfoot[0].componentId;
+
+        const resLfoot = await fetch(
+          `https://localhost:7011/api/Components/model/${this.lfootId}/material/${this.lfoot_m_Id}`
+        );
+        const dataLfoot = await resLfoot.json();
+        this.comId.c_lfoot_Id = dataLfoot[0].componentId;
+
+        // 返回 API 返回的数据
+        return data;*/
+
+        // 通过 Promise.all 發起多個fetch ///但還是太慢
+        const requests = [
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
+          ),
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.bodyId}/material/${this.body_m_Id}`
+          ),
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.rhandId}/material/${this.rhand_m_Id}`
+          ),
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.lhandId}/material/${this.lhand_m_Id}`
+          ),
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.rfootId}/material/${this.rfoot_m_Id}`
+          ),
+          fetch(
+            `https://localhost:7011/api/Components/model/${this.lfootId}/material/${this.lfoot_m_Id}`
+          ),
+        ];
+
+        // 等待所有请求都完成
+        const responses = await Promise.all(requests);
+
+        // 解析 API 返回的数据并更新 comId 对应的值
+        const data = await Promise.all(
+          responses.map((response) => response.json())
+        );
+
+        this.comId.c_head_Id = data[0][0].componentId;
+        this.comId.c_body_Id = data[1][0].componentId;
+        this.comId.c_rhand_Id = data[2][0].componentId;
+        this.comId.c_lhand_Id = data[3][0].componentId;
+        this.comId.c_rfoot_Id = data[4][0].componentId;
+        this.comId.c_lfoot_Id = data[5][0].componentId;
+
+        return data;
       } catch (error) {
         console.error(error);
         return null;
@@ -330,11 +422,11 @@ export default {
   text-align: right;
 }
 th:first-child {
-  border-right: 1px solid 	#ADADAD;
-  background-color: 	#ADADAD;
+  border-right: 1px solid #adadad;
+  background-color: #adadad;
 }
 td:first-child {
-  border-right: 1px solid 	#ADADAD;
-  background-color: 	#ADADAD;
+  border-right: 1px solid #adadad;
+  background-color: #adadad;
 }
 </style>
