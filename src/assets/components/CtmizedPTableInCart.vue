@@ -70,7 +70,6 @@
                   </v-table>
                 </v-col>
               </v-row>
-
               <v-row no-gutters align="center">
                 <v-spacer></v-spacer>
 
@@ -82,7 +81,7 @@
                   <p class="text-field-custom">數量：</p>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field v-model="value" :input-height="80">
+                  <v-text-field v-model="value">
                     <template v-slot:append>
                       <v-btn @click="increment" variant="text" icon>
                         <v-icon size="small">mdi-plus</v-icon>
@@ -104,16 +103,140 @@
             </v-card-actions>
           </v-expansion-panel-text>
         </v-expansion-panel>
+        <!-- 動態新增-起始 -->
+        <div>
+          <v-expansion-panel v-for="(product, index) in products" :key="index">
+            <v-expansion-panel-title v-slot="{ open }">
+              <v-row no-gutters align="center">
+                <v-col cols="1" class="d-flex justify-center"> #1 </v-col>
+                <v-col cols="3" justify="center">
+                  <v-img
+                    src="https://localhost:7098/imgs/messageImg/04.jpg"
+                    width="100%"
+                    class="bg-grey-lighten-2"
+                  ></v-img>
+                </v-col>
+                <v-col cols="3" class="d-flex justify-start justify-center">
+                  單價:1800元
+                </v-col>
+                <v-col cols="2" class="d-flex justify-start justify-center">
+                  數量:{{ product.CHead }}
+                </v-col>
+                <v-col cols="3" class="d-flex justify-start justify-center">
+                  小計:3600元
+                </v-col>
+              </v-row>
+            </v-expansion-panel-title>
+
+            <v-expansion-panel-text>
+              <v-container>
+                <v-row no-gutters align="auto">
+                  <v-col>
+                    <v-table class="text-center">
+                      <thead>
+                        <tr>
+                          <th class="text-right padding-right">Body Part</th>
+                          <th class="text-center">ComponentId</th>
+                          <th class="text-center">SubTotal</th>
+                          <th class="text-center">=</th>
+                          <th class="text-center">Model</th>
+                          <th class="text-center">Model-Price</th>
+                          <th class="text-center">+</th>
+                          <th class="text-center">Material</th>
+                          <th class="text-center">Material-Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="text-right">Head</td>
+                          <td id="">{{}}</td>
+                          <td id="">{{}}</td>
+                          <td id="">=</td>
+                          <td id="">{{}}</td>
+                          <td id="head"></td>
+                          <td id="">+</td>
+                          <td id="">{{}}</td>
+                          <td id="head_M"></td>
+                          <td id="">{{}}</td>
+                        </tr>
+                      </tbody>
+                    </v-table>
+                  </v-col>
+                </v-row>
+                <v-row no-gutters align="center">
+                  <v-spacer></v-spacer>
+
+                  <v-col cols="3"> </v-col>
+
+                  <v-divider vertical class="mx-4"></v-divider>
+
+                  <v-col cols="1">
+                    <p class="text-field-custom">數量：</p>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field v-model="value">
+                      <template v-slot:append>
+                        <v-btn @click="increment" variant="text" icon>
+                          <v-icon size="small">mdi-plus</v-icon>
+                        </v-btn>
+                      </template>
+                      <template v-slot:prepend>
+                        <v-btn @click="decrement" variant="text" icon>
+                          <v-icon size="small">mdi-minus</v-icon>
+                        </v-btn>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+              </v-container>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn variant="text" color="secondary"> Delete </v-btn>
+                <v-btn variant="text" color="primary"> Edit </v-btn>
+              </v-card-actions>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </div>
       </v-expansion-panels>
+    </div>
+    <!-- 動態新增-結束 -->
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>CHead</th>
+            <th>CBody</th>
+            <th>CLhand</th>
+            <th>CRhand</th>
+            <th>CLFoot</th>
+            <th>CRFoot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 使用v-for遍历products中的每个product -->
+          <tr v-for="(product, index) in products" :key="index">
+            <td>{{ product.Num }}</td>
+            <td>{{ product.CHead }}</td>
+            <td>{{ product.CBody }}</td>
+            <td>{{ product.CLhand }}</td>
+            <td>{{ product.CRhand }}</td>
+            <td>{{ product.CLFoot }}</td>
+            <td>{{ product.CRFoot }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </v-container>
 </template>
 
 <script>
+const ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
 export default {
   data() {
     return {
-      value: 0,
+      value: 1,
+      products: ProdList,
     };
   },
   methods: {
@@ -121,10 +244,47 @@ export default {
       this.value++;
     },
     decrement() {
-      if (this.value > 0) {
+      if (this.value > 1) {
         this.value--;
       }
     },
+  },
+  mounted() {
+    /*const readdata = () => {
+      const ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
+      const tableBody = document.querySelector("#productTable tbody");
+      tableBody.innerHTML = "";
+      // 遍历ProdList中的每个Productdata对象，并将其填充到Table中
+      ProdList.forEach((product) => {
+        const row = document.createElement("tr");
+
+        // 创建每个单元格并设置其内容
+        const columns = [
+          "Num",
+          "CHead",
+          "CBody",
+          "CLhand",
+          "CRhand",
+          "CLFoot",
+          "CRFoot",
+        ];
+        columns.forEach((column) => {
+          const cell = document.createElement("td");
+          cell.textContent = product[column];
+          row.appendChild(cell);
+        });
+
+        tableBody.appendChild(row);
+      });
+      //const itemInfo = JSON.parse(localStorage.getItem("1"));
+      console.log(itemInfo.CHead);
+      console.log(itemInfo.CBody);
+      console.log(itemInfo.CRhand);
+      console.log(itemInfo.CLhand);
+      console.log(itemInfo.CRFoot);
+      console.log(itemInfo.CLFoot);
+    };
+    readdata();*/
   },
 };
 </script>

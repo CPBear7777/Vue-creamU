@@ -32,7 +32,6 @@
         <img id="capturedImage" src="" alt="Captured Screenshot" />
         <br />
         <CalculateTable></CalculateTable>
-
         <!-- <CalculateTable2></CalculateTable2> -->
 
         <br />

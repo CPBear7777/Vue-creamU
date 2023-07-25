@@ -98,41 +98,37 @@
     </tbody>
   </v-table>
   <br />
-  <v-row justify="end" align="center">
-    <v-col>
-      <v-text-field
-        v-model="value"
-        text-align="center"
-        style="width: 200px; height: 40px"
-      >
-        <template v-slot:append>
-          <v-btn @click="increment" variant="text" icon>
-            <v-icon size="small">mdi-plus</v-icon>
-          </v-btn>
-        </template>
-        <template v-slot:prepend>
-          <v-btn @click="decrement" variant="text" icon>
-            <v-icon size="small">mdi-minus</v-icon>
-          </v-btn>
-        </template>
-      </v-text-field>
-    </v-col>
-    <v-col>
-      <p id="total">SubTotal:{{ calculateSum() }}</p>
-    </v-col>
-  </v-row>
-  <v-row justify="end" align="center">
-    <p id="total">Total:{{ calculateSum() * value }}</p>
-  </v-row>
+  <v-container>
+    <v-row justify="end"></v-row>
+    <v-row justify="end">
+      <v-col></v-col>
+      <v-col></v-col>
+    </v-row>
+  </v-container>
+  <p class="UnitP">Unit Price:{{ calculateSum() }}</p>
+  <v-text-field
+    v-model="amount"
+    text-align="center"
+    style="width: 200px; height: 40px"
+  >
+    <template v-slot:append>
+      <v-btn @click="increment" variant="text" icon>
+        <v-icon size="small">mdi-plus</v-icon>
+      </v-btn>
+    </template>
+    <template v-slot:prepend>
+      <v-btn @click="decrement" variant="text" icon>
+        <v-icon size="small">mdi-minus</v-icon>
+      </v-btn>
+    </template>
+  </v-text-field>
+
+  <p class="TotalP">Total Price:{{ calculateSum() * amount }}</p>
+
   <br />
-  <v-row justify="end" align="center">
-    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="AddToCart"
-      >Buy Now</v-btn
-    >
-    <v-btn id="btn" size="x-large" color="#e5d2ab" @click="Cclean"
-      >Delete</v-btn
-    >
-  </v-row>
+
+  <v-btn size="x-large" color="#e5d2ab" @click="AddToCart">Buy Now</v-btn>
+  <v-btn size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
 </template>
 
 <script>
@@ -178,7 +174,7 @@ export default {
         lfoot_m_Id: 200001,
       },
 
-      com_head_Id: 0,
+      //com_head_Id: 0,
       comId: {
         c_head_Id: 0,
         c_body_Id: 0,
@@ -187,7 +183,7 @@ export default {
         c_rfoot_Id: 0,
         c_lfoot_Id: 0,
       },
-      value: 1,
+      amount: 1,
     };
   },
 
@@ -274,21 +270,11 @@ export default {
     };
     loadDB();
   },
-  /*computed: {
-    // 计算属性用于显示 comId 对象中的属性值
-    display_c_head_Id() {
-      return this.comId.c_head_Id;
-    },
-    display_c_body_Id() {
-      return this.comId.c_body_Id;
-    },
-    // 其他属性的计算属性
-  },*/
   updated() {
+    console.log("updated有沒有在動?");
     //const moIdKeys = Object.keys(this.moId);
     //const maIdKeys = Object.keys(this.maId);
     //const comIdKeys = Object.keys(this.comId);
-    console.log("有沒有在動?");
     const getComponent = async () => {
       try {
         //會無法即時更新，猜測是因為只能抓到預設值，如果想要抓到即時更新的值，就要從標籤那邊抓
@@ -411,6 +397,7 @@ export default {
     };
     getComponent();
   },
+
   methods: {
     //算總數
     calculateSum() {
@@ -425,22 +412,52 @@ export default {
       return sum;
     },
     AddToCart() {
-      const data = this.headId;
-      //localStorage.setItem('data2',data);
+      //檢查編號，最新的Num是多少，若沒有就從1開始
+      let currentNumber = parseInt(localStorage.getItem("currentNumber")) || 1;
+      //初始化List
+      let ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
+      //建立物件
+      const Productdata = {
+        Num: currentNumber, //再考慮一下
+        Img: "01.jpg",
+        Info: {
+          unitprice: this.calculateSum(),
+          amount: this.amount,
+        },
+        ComDetail: {
+          CHead: this.comId.c_head_Id,
+          //價格?
+          CBody: this.comId.c_body_Id,
+          CLhand: this.comId.c_lhand_Id,
+          CRhand: this.comId.c_rhand_Id,
+          CLFoot: this.comId.c_lfoot_Id,
+          CRFoot: this.comId.c_rfoot_Id,
+          unitprice: this.calculateSum(),
+          amount: this.amount,
+          type: 0,
+        },
+      };
+      //把物件存到List
+      ProdList.push(Productdata);
+      currentNumber++;
+      //更新編號並暫存編號
+      localStorage.setItem("currentNumber", currentNumber.toString());
+      //存到localStorage
+      localStorage.setItem("addItemList", JSON.stringify(ProdList));
 
-      alert("已存" + data);
+      alert("已存" + Productdata);
     },
     Cclean() {
-      localStorage.removeItem("data2");
+      localStorage.removeItem("2");
       this.head_m_price = "";
       alert("已清除");
     },
     increment() {
-      this.value++;
+      this.amount++;
     },
     decrement() {
-      if (this.value > 0) {
-        this.value--;
+      if (this.amount > 1) {
+        this.amount--;
       }
     },
   },
@@ -452,7 +469,11 @@ export default {
 </script>
 
 <style csope>
-#total {
+.UnitP {
+  font-size: 25px;
+  text-align: right;
+}
+.TotalP {
   font-size: 30px;
   text-align: right;
 }
@@ -465,9 +486,4 @@ td:first-child {
   background-color: #adadad;
 }
 /* 添加自定義的class來改變文本的大小和粗細 */
-.text-field-custom {
-  font-size: 20px; /* 更改文本大小 */
-  font-weight: bold; /* 更改文本粗細 */
-  text-align: right;
-}
 </style>
