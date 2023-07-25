@@ -97,9 +97,35 @@
       </tr>
     </tbody>
   </v-table>
-  <p id="total">Total:{{ calculateSum() }}</p>
   <br />
-  <v-row justify="end">
+  <v-row justify="end" align="center">
+    <v-col>
+      <v-text-field
+        v-model="value"
+        text-align="center"
+        style="width: 200px; height: 40px"
+      >
+        <template v-slot:append>
+          <v-btn @click="increment" variant="text" icon>
+            <v-icon size="small">mdi-plus</v-icon>
+          </v-btn>
+        </template>
+        <template v-slot:prepend>
+          <v-btn @click="decrement" variant="text" icon>
+            <v-icon size="small">mdi-minus</v-icon>
+          </v-btn>
+        </template>
+      </v-text-field>
+    </v-col>
+    <v-col>
+      <p id="total">SubTotal:{{ calculateSum() }}</p>
+    </v-col>
+  </v-row>
+  <v-row justify="end" align="center">
+    <p id="total">Total:{{ calculateSum() * value }}</p>
+  </v-row>
+  <br />
+  <v-row justify="end" align="center">
     <v-btn id="btn" size="x-large" color="#e5d2ab" @click="AddToCart"
       >Buy Now</v-btn
     >
@@ -161,6 +187,7 @@ export default {
         c_rfoot_Id: 0,
         c_lfoot_Id: 0,
       },
+      value: 1,
     };
   },
 
@@ -261,6 +288,7 @@ export default {
     //const moIdKeys = Object.keys(this.moId);
     //const maIdKeys = Object.keys(this.maId);
     //const comIdKeys = Object.keys(this.comId);
+    console.log("有沒有在動?");
     const getComponent = async () => {
       try {
         //會無法即時更新，猜測是因為只能抓到預設值，如果想要抓到即時更新的值，就要從標籤那邊抓
@@ -375,7 +403,6 @@ export default {
         this.comId.c_lhand_Id = data[3][0].componentId;
         this.comId.c_rfoot_Id = data[4][0].componentId;
         this.comId.c_lfoot_Id = data[5][0].componentId;
-
         return data;
       } catch (error) {
         console.error(error);
@@ -408,6 +435,14 @@ export default {
       this.head_m_price = "";
       alert("已清除");
     },
+    increment() {
+      this.value++;
+    },
+    decrement() {
+      if (this.value > 0) {
+        this.value--;
+      }
+    },
   },
   created() {
     const sum = this.calculateSum();
@@ -428,5 +463,11 @@ th:first-child {
 td:first-child {
   border-right: 1px solid #adadad;
   background-color: #adadad;
+}
+/* 添加自定義的class來改變文本的大小和粗細 */
+.text-field-custom {
+  font-size: 20px; /* 更改文本大小 */
+  font-weight: bold; /* 更改文本粗細 */
+  text-align: right;
 }
 </style>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Review from "./views/Review.vue";
 import Message from "./views/Message.vue";
 import WebGL from "./views/CustomizedP.vue";
+import Cart from "./views/Cart.vue";
 
 //http://localhost:12345/ =>Home.vue
 //http://localhost:12345/about =>About.vue
@@ -17,6 +18,10 @@ const routes = [
   {
     path: "/WebGL2",
     component: WebGL,
+  },
+  {
+    path: "/Cart",
+    component: Cart,
   },
 ];
 
