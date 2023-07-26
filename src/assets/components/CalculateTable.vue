@@ -131,6 +131,13 @@
   <v-btn size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
 </template>
 
+<!-- <script setup>
+//用於接收父元件傳進來的資料
+const screenshot = defineImg({
+  Img: String,
+});
+console.log(screenshot.Img);
+</script> -->
 <script>
 //有setup就可以省掉return
 import { ref } from "vue";
@@ -413,19 +420,74 @@ export default {
     },
     AddToCart() {
       //檢查編號，最新的Num是多少，若沒有就從1開始
-      let currentNumber = parseInt(localStorage.getItem("currentNumber")) || 1;
+      //let currentNumber = parseInt(localStorage.getItem("currentNumber")) || 1;
       //初始化List
       let ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
       //建立物件
       const Productdata = {
-        Num: currentNumber, //再考慮一下
+        //Num: currentNumber, //再考慮一下
         Img: "01.jpg",
         Info: {
           unitprice: this.calculateSum(),
           amount: this.amount,
+          type: 0,
         },
-        ComDetail: {
-          CHead: this.comId.c_head_Id,
+        ComDetail: [
+          {
+            type: "CHead",
+            comId: this.comId.c_head_Id,
+            comPrice: this.head_mo_price + this.head_m_price,
+            moId: this.moId.headId,
+            moPrice: this.head_mo_price,
+            maId: this.maId.head_m_Id,
+            maPrice: this.head_m_price,
+          },
+          {
+            type: "CBody",
+            comId: this.comId.c_body_Id,
+            comPrice: this.body_mo_price + this.body_m_price,
+            moId: this.moId.bodyId,
+            moPrice: this.body_mo_price,
+            maId: this.maId.body_m_Id,
+            maPrice: this.body_m_price,
+          },
+          {
+            type: "CLhand",
+            comId: this.comId.c_lhand_Id,
+            comPrice: this.lhand_mo_price + this.lhand_m_price,
+            moId: this.moId.lhandId,
+            moPrice: this.lhand_mo_price,
+            maId: this.maId.lhand_m_Id,
+            maPrice: this.lhand_m_price,
+          },
+          {
+            type: "CRhand",
+            comId: this.comId.c_rhand_Id,
+            comPrice: this.rhand_mo_price + this.rhand_m_price,
+            moId: this.moId.rhandId,
+            moPrice: this.rhand_mo_price,
+            maId: this.maId.rhand_m_Id,
+            maPrice: this.rhand_m_price,
+          },
+          {
+            type: "CLFoot",
+            comId: this.comId.c_lfoot_Id,
+            comPrice: this.lfoot_mo_price + this.lfoot_m_price,
+            moId: this.moId.lfootId,
+            moPrice: this.lfoot_mo_price,
+            maId: this.maId.lfoot_m_Id,
+            maPrice: this.lfoot_m_price,
+          },
+          {
+            type: "CRFoot",
+            comId: this.comId.c_rfoot_Id,
+            comPrice: this.rfoot_mo_price + this.rfoot_m_price,
+            moId: this.moId.rfootId,
+            moPrice: this.rfoot_mo_price,
+            maId: this.maId.rfoot_m_Id,
+            maPrice: this.rfoot_m_price,
+          },
+          /*CHead: this.comId.c_head_Id,
           //價格?
           CBody: this.comId.c_body_Id,
           CLhand: this.comId.c_lhand_Id,
@@ -434,21 +496,21 @@ export default {
           CRFoot: this.comId.c_rfoot_Id,
           unitprice: this.calculateSum(),
           amount: this.amount,
-          type: 0,
-        },
+          type: 0,*/
+        ],
       };
       //把物件存到List
       ProdList.push(Productdata);
-      currentNumber++;
+      //currentNumber++;
       //更新編號並暫存編號
-      localStorage.setItem("currentNumber", currentNumber.toString());
+      //localStorage.setItem("currentNumber", currentNumber.toString());
       //存到localStorage
       localStorage.setItem("addItemList", JSON.stringify(ProdList));
 
       alert("已存" + Productdata);
     },
     Cclean() {
-      localStorage.removeItem("2");
+      localStorage.removeItem("addItemList");
       this.head_m_price = "";
       alert("已清除");
     },

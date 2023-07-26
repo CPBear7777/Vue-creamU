@@ -31,7 +31,8 @@
         >
         <img id="capturedImage" src="" alt="Captured Screenshot" />
         <br />
-        <CalculateTable></CalculateTable>
+        <CalculateTable></CalculateTable
+        ><!--:image="screenshot"用來傳給子元件-->
         <!-- <CalculateTable2></CalculateTable2> -->
 
         <br />
@@ -136,9 +137,11 @@ export default {
           // 將 Blob 轉換成臨時的 URL 並顯示
           const blobUrl = URL.createObjectURL(capturedBlob);
           capturedImage.src = blobUrl;
+          screenshot = blobUrl; //用來傳給子元件
         });
       });
     },
+    sendImg() {},
   },
 };
 </script>
