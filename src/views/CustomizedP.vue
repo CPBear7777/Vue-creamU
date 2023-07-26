@@ -31,8 +31,11 @@
         >
         <img id="capturedImage" src="" alt="Captured Screenshot" />
         <br />
-        <CalculateTable></CalculateTable
-        ><!--:image="screenshot"用來傳給子元件-->
+        <CalculateTable
+          @sendimg-event="captureScreenshot"
+          :imgData="bblob"
+        ></CalculateTable
+        ><!--:bblob="bblob"用來傳給子組件-->
         <!-- <CalculateTable2></CalculateTable2> -->
 
         <br />
@@ -45,6 +48,15 @@
 <script>
 // 用於啟動Unity
 export default {
+  components: {
+    CalculateTable,
+    Info,
+  },
+  data() {
+    return {
+      bblob: "default",
+    };
+  },
   beforeCreate() {
     let script1 = document.createElement("script");
     script1.setAttribute("src", "Build/UnityLoader.js");
@@ -124,23 +136,40 @@ export default {
   methods: {
     //截圖功能
     captureScreenshot() {
-      //找到button
-      const elem = document.querySelector("#screenshot");
+      //宣告與找到button
+      //const elem = document.querySelector("#screenshot");
       // 获取 WebGL 渲染的 <canvas> 元素
       const canvas = document.getElementById("canvas");
+      //不觸發跨域安全性問題，因此才可繪製圖片
+      canvas.crossOrigin = "Anonymous";
       const capturedImage = document.querySelector("#capturedImage");
-      let capturedBlob = null; // 变量用於儲存截圖的 Blob 对象
-      elem.addEventListener("click", () => {
-        canvas.toBlob((blob) => {
-          capturedBlob = blob; // 將截圖的 Blob 儲存到 capturedBlob 中
+      let capturedBlob = null; // 變數用於儲存截圖的 Blob 對象
+      //console.log("對了拉");
+      //點擊事件觸發截圖
+      //elem.addEventListener("click", () => {
+      localStorage.setItem("imgBlob", canvas.toDataURL()); //將圖像轉化成DataURL(Base64編碼)，並存到localStorage中
+      this.bblob = canvas.toDataURL();
+      console.log(this.bblob);
+      canvas.toBlob((blob) => {
+        capturedBlob = blob; // 將截圖的 Blob 儲存到 capturedBlob 中
+        //this.bblob = blob; //這邊就是他的object，object才可以傳出去
 
-          // 將 Blob 轉換成臨時的 URL 並顯示
-          const blobUrl = URL.createObjectURL(capturedBlob);
-          capturedImage.src = blobUrl;
-          screenshot = blobUrl; //用來傳給子元件
-        });
+        //僅在此頁面中顯示
+        // 將 Blob 轉換成臨時的 URL 並顯示
+        const blobUrl = URL.createObjectURL(capturedBlob);
+        capturedImage.src = blobUrl;
+        //});
       });
+      /*const buf2str = (buf) => {
+        var bufView = new Uint16Array(buf);
+        var unis = "";
+        for (var i = 0; i < bufView.length; i++) {
+          unis = unis + String.fromCharCode(bufView[i]);
+        }
+        return unis;
+      };*/
     },
+
     sendImg() {},
   },
 };

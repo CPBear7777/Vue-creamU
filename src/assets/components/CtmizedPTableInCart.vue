@@ -2,6 +2,19 @@
   <v-container>
     <div>
       <h3>Customized Product List</h3>
+      <hr />
+      <v-row justify="center">
+        <v-col cols="auto">
+          <div v-if="products.length == 0">
+            <br />
+            <br />
+            <br />
+            <v-btn prepend-icon="mdi-cart-arrow-down">Buy Now</v-btn>
+            <h3>Opps! No Product In Shopping Cart!</h3>
+          </div>
+        </v-col>
+      </v-row>
+
       <v-expansion-panels>
         <!-- <v-expansion-panel>
           <v-expansion-panel-title v-slot="{ open }">
@@ -206,7 +219,7 @@
 export default {
   data() {
     return {
-      products: [],
+      products: [], //讀取
       foramount: JSON.parse(localStorage.getItem("addItemList")) || 1,
       value: 1,
       //products: ProdList,

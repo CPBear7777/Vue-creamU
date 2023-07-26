@@ -1,5 +1,7 @@
 <template>
   <h2>Selected Component & Price</h2>
+  <p>1231123{{ imgData }}</p>
+  <img id="capturedImage2" src="" alt="Captured Screenshot" />
   <v-table class="text-center">
     <thead>
       <tr>
@@ -129,6 +131,7 @@
 
   <v-btn size="x-large" color="#e5d2ab" @click="AddToCart">Buy Now</v-btn>
   <v-btn size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
+  <v-btn size="x-large" color="#e5d2ab" @click="ScreenShot">Test</v-btn>
 </template>
 
 <!-- <script setup>
@@ -145,6 +148,10 @@ import { ref } from "vue";
 const components = [];
 
 export default {
+  //接收父組件傳來的資料
+  // props: {
+  //   imgData: { type: String },
+  // },
   data() {
     //初始值
     return {
@@ -191,6 +198,7 @@ export default {
         c_lfoot_Id: 0,
       },
       amount: 1,
+      imgData: "",
     };
   },
 
@@ -279,6 +287,12 @@ export default {
   },
   updated() {
     console.log("updated有沒有在動?");
+    // 將 Blob 轉換成臨時的 URL 並顯示
+    // const blobUrl = URL.createObjectURL(localStorage.getIte("imgBlob"));
+
+    //用來放圖片，之後把此功能移到告物車
+    const capturedImage2 = document.querySelector("#capturedImage2");
+    capturedImage2.src = localStorage.getItem("imgBlob");
     //const moIdKeys = Object.keys(this.moId);
     //const maIdKeys = Object.keys(this.maId);
     //const comIdKeys = Object.keys(this.comId);
@@ -404,8 +418,12 @@ export default {
     };
     getComponent();
   },
-
+  //讓這邊可以抓到圖片路徑
   methods: {
+    ScreenShot() {
+      this.$emit("sendimg-event");
+    },
+
     //算總數
     calculateSum() {
       let sum = 0;
@@ -419,6 +437,9 @@ export default {
       return sum;
     },
     AddToCart() {
+      console.log("在子組件中" + this.imgData);
+      this.$emit("sendimg-event");
+      //寫入
       //檢查編號，最新的Num是多少，若沒有就從1開始
       //let currentNumber = parseInt(localStorage.getItem("currentNumber")) || 1;
       //初始化List
@@ -426,7 +447,7 @@ export default {
       //建立物件
       const Productdata = {
         //Num: currentNumber, //再考慮一下
-        Img: "01.jpg",
+        Img: localStorage.getItem("imgBlob"),
         Info: {
           unitprice: this.calculateSum(),
           amount: this.amount,
@@ -509,6 +530,7 @@ export default {
 
       alert("已存" + Productdata);
     },
+    props: ["imgData"],
     Cclean() {
       localStorage.removeItem("addItemList");
       this.head_m_price = "";
