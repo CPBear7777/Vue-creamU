@@ -1,7 +1,7 @@
 <template>
   <h2>Selected Component & Price</h2>
-  <p>1231123{{ imgData }}</p>
-  <img id="capturedImage2" src="" alt="Captured Screenshot" />
+  <!-- <p>1231123{{ imgData }}</p>
+  <img id="capturedImage2" src="" alt="Captured Screenshot" /> -->
   <v-table class="text-center">
     <thead>
       <tr>
@@ -100,13 +100,6 @@
     </tbody>
   </v-table>
   <br />
-  <v-container>
-    <v-row justify="end"></v-row>
-    <v-row justify="end">
-      <v-col></v-col>
-      <v-col></v-col>
-    </v-row>
-  </v-container>
   <p class="UnitP">Unit Price:{{ calculateSum() }}</p>
   <v-text-field
     v-model="amount"
@@ -130,17 +123,10 @@
   <br />
 
   <v-btn size="x-large" color="#e5d2ab" @click="AddToCart">Buy Now</v-btn>
-  <v-btn size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn>
-  <v-btn size="x-large" color="#e5d2ab" @click="ScreenShot">Test</v-btn>
+  <!-- <v-btn size="x-large" color="#e5d2ab" @click="Cclean">Delete</v-btn> -->
+  <!-- <v-btn size="x-large" color="#e5d2ab" @click="ScreenShot">Test</v-btn> -->
 </template>
 
-<!-- <script setup>
-//用於接收父元件傳進來的資料
-const screenshot = defineImg({
-  Img: String,
-});
-console.log(screenshot.Img);
-</script> -->
 <script>
 //有setup就可以省掉return
 import { ref } from "vue";
@@ -148,10 +134,6 @@ import { ref } from "vue";
 const components = [];
 
 export default {
-  //接收父組件傳來的資料
-  // props: {
-  //   imgData: { type: String },
-  // },
   data() {
     //初始值
     return {
@@ -211,8 +193,7 @@ export default {
         //找到標籤
         const headField = document.getElementById("head");
         if (!headField) return;
-        //變數=標籤的內容的price
-        //   console.log(`head_mo_price: ${this.head_mo_price}`);
+
         const bodyField = document.getElementById("body");
         const rhField = document.getElementById("rhand");
         const lhField = document.getElementById("lhand");
@@ -256,6 +237,7 @@ export default {
         this.lfoot_m_Id = this.datas[lfMtrl.innerText].materialId;
       } catch (error) {}
     };
+    //API:載入model和material
     const loadDB = async () => {
       const res = await fetch(`https://localhost:7011/api/Models`);
       (await res.json()).forEach((element) => {
@@ -265,16 +247,8 @@ export default {
       (await res2.json()).forEach((element) => {
         this.datas[element.materialName] = element;
       });
-      /*const res3 = await fetch(`https://localhost:7011/api/Component`);
-      (await res3.json()).forEach((element) => {
-        this.datas[element.componentName] = element;
-      });*/
 
-      //   (v) => {};
-      //this.datas["Wood034"] = { price: 87 };
-      //this.datas["Wood018"] = { price: 78 };
       const intervalId = setInterval(() => {
-        //目前只能用這個笨方法QQ
 
         const headField = document.getElementById("head");
 
@@ -291,89 +265,12 @@ export default {
     // const blobUrl = URL.createObjectURL(localStorage.getIte("imgBlob"));
 
     //用來放圖片，之後把此功能移到告物車
-    const capturedImage2 = document.querySelector("#capturedImage2");
-    capturedImage2.src = localStorage.getItem("imgBlob");
-    //const moIdKeys = Object.keys(this.moId);
-    //const maIdKeys = Object.keys(this.maId);
-    //const comIdKeys = Object.keys(this.comId);
+    // const capturedImage2 = document.querySelector("#capturedImage2");
+    // capturedImage2.src = localStorage.getItem("imgBlob");
+
+    //查找Component
     const getComponent = async () => {
       try {
-        //會無法即時更新，猜測是因為只能抓到預設值，如果想要抓到即時更新的值，就要從標籤那邊抓
-        /*for (let i = 0; i < 6; i++) {
-          const mokey = moIdKeys[i];
-          const makey = maIdKeys[i];
-          const comkey = comIdKeys[i];
-          console.log("1." + this.moId[mokey] + "2." + this.maId[makey]);
-          const res = await fetch(
-            `https://localhost:7011/api/Components/model/${this.moId[mokey]}/material/${this.maId[makey]}`
-          );
-          const data = await res.json();
-          components.value = data;
-          console.log(
-            `components.value[0].componentId:${components.value[0].componentId}`
-          );
-          this.comId[comkey] = components.value[0].componentId;
-        }*/
-        //這方法太慢
-        /*const res4 = await fetch(
-          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
-        );
-        const datas = await res4.json();
-        console.log("datas", datas);
-        //console.log("what is components?", components);
-        components.value = datas;
-
-        console.log(
-          `components.value[0].componentId:${components.value[0].componentId}`
-        );
-        this.com_head_Id = components.value[0].componentId;
-        // 回傳 API 回應的資料
-        return components;*/
-        // 以 moId.headId 和 maId.head_m_Id 的值为例，获取对应的 comId.c_head_Id 的值
-        /*const res4 = await fetch(
-          `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
-        );
-
-        // 解析 API 返回的数据
-        const data = await res4.json();
-
-        // 将对应的 comId 的值更新为获取的数据中的 componentId
-        this.comId.c_head_Id = data[0].componentId;
-
-        // 对于其他的部位，重复相同的步骤
-        const resBody = await fetch(
-          `https://localhost:7011/api/Components/model/${this.bodyId}/material/${this.body_m_Id}`
-        );
-        const dataBody = await resBody.json();
-        this.comId.c_body_Id = dataBody[0].componentId;
-
-        const resRhand = await fetch(
-          `https://localhost:7011/api/Components/model/${this.rhandId}/material/${this.rhand_m_Id}`
-        );
-        const dataRhand = await resRhand.json();
-        this.comId.c_rhand_Id = dataRhand[0].componentId;
-
-        const resLhand = await fetch(
-          `https://localhost:7011/api/Components/model/${this.lhandId}/material/${this.lhand_m_Id}`
-        );
-        const dataLhand = await resLhand.json();
-        this.comId.c_lhand_Id = dataLhand[0].componentId;
-
-        const resRfoot = await fetch(
-          `https://localhost:7011/api/Components/model/${this.rfootId}/material/${this.rfoot_m_Id}`
-        );
-        const dataRfoot = await resRfoot.json();
-        this.comId.c_rfoot_Id = dataRfoot[0].componentId;
-
-        const resLfoot = await fetch(
-          `https://localhost:7011/api/Components/model/${this.lfootId}/material/${this.lfoot_m_Id}`
-        );
-        const dataLfoot = await resLfoot.json();
-        this.comId.c_lfoot_Id = dataLfoot[0].componentId;
-
-        // 返回 API 返回的数据
-        return data;*/
-
         // 通过 Promise.all 發起多個fetch ///但還是太慢
         const requests = [
           fetch(
@@ -437,7 +334,7 @@ export default {
       return sum;
     },
     AddToCart() {
-      console.log("在子組件中" + this.imgData);
+      //console.log("在子組件中" + this.imgData);
       this.$emit("sendimg-event");
       //寫入
       //檢查編號，最新的Num是多少，若沒有就從1開始
@@ -508,34 +405,24 @@ export default {
             maId: this.maId.rfoot_m_Id,
             maPrice: this.rfoot_m_price,
           },
-          /*CHead: this.comId.c_head_Id,
-          //價格?
-          CBody: this.comId.c_body_Id,
-          CLhand: this.comId.c_lhand_Id,
-          CRhand: this.comId.c_rhand_Id,
-          CLFoot: this.comId.c_lfoot_Id,
-          CRFoot: this.comId.c_rfoot_Id,
-          unitprice: this.calculateSum(),
-          amount: this.amount,
-          type: 0,*/
         ],
       };
       //把物件存到List
       ProdList.push(Productdata);
-      //currentNumber++;
-      //更新編號並暫存編號
-      //localStorage.setItem("currentNumber", currentNumber.toString());
       //存到localStorage
       localStorage.setItem("addItemList", JSON.stringify(ProdList));
+      localStorage.removeItem("imgBlob");
 
-      alert("已存" + Productdata);
+      alert("已加入購物車");
     },
     props: ["imgData"],
+    //清除localStorage
     Cclean() {
       localStorage.removeItem("addItemList");
       this.head_m_price = "";
       alert("已清除");
     },
+    //控制購買數量
     increment() {
       this.amount++;
     },

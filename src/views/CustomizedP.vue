@@ -21,15 +21,15 @@
           <!--class="webgl-content"-->
           <div id="unityContainer" style="width: 960px; height: 540px"></div>
         </div>
-        <v-btn
+        <!-- <v-btn
           id="screenshot"
           type="button"
           size="x-large"
           color="#e5d2ab"
           @click="captureScreenshot"
           >Save</v-btn
-        >
-        <img id="capturedImage" src="" alt="Captured Screenshot" />
+        > -->
+        <!-- <img id="capturedImage" src="" alt="Captured Screenshot" /> -->
         <br />
         <CalculateTable
           @sendimg-event="captureScreenshot"
@@ -95,44 +95,7 @@ export default {
         clearInterval(checkIntervalId);
       }
     }, 500);
-    /*//https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-tips.html
-    //截圖功能
-    //找報button並賦予監聽事件
-    //監聽事件：把<canvas>元素的內容轉化為Blob對象(二進制數據，用於保存截圖)
-    const elem = document.querySelector("#screenshot");
-    //let needCapture = false;
-    elem.addEventListener("click", () => {
-      //needCapture = true;
-      drawScene();
-      canvas.toBlob((blob) => {//回調函數中的 blob 參數即为截图的 Blob 对象。
-        //指定要存的檔案名稱
-        //會在<body>內先創建一個隱藏的<a>標籤，href內設置為截圖的BlobL
-        saveBlob(blob, `screencapture-${canvas.width}x${canvas.height}.png`);
-      });
-    });
-
-    const saveBlob = (function () {
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style.display = "none";
-      return function saveData(blob, fileName) {
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-      };
-    })();
-
-    const drawScene = (function (item){
-      if (needCapture) {
-        needCapture = false;
-        canvas.toBlob((blob) => {
-          saveBlob(blob, `screencapture-${canvas.width}x${canvas.height}.png`);
-        });
-      }
-    })();*/
   },
-
   methods: {
     //截圖功能
     captureScreenshot() {
@@ -142,32 +105,22 @@ export default {
       const canvas = document.getElementById("canvas");
       //不觸發跨域安全性問題，因此才可繪製圖片
       canvas.crossOrigin = "Anonymous";
-      const capturedImage = document.querySelector("#capturedImage");
-      let capturedBlob = null; // 變數用於儲存截圖的 Blob 對象
-      //console.log("對了拉");
+      //const capturedImage = document.querySelector("#capturedImage");
+      //let capturedBlob = null; // 變數用於儲存截圖的 Blob 對象
       //點擊事件觸發截圖
-      //elem.addEventListener("click", () => {
       localStorage.setItem("imgBlob", canvas.toDataURL()); //將圖像轉化成DataURL(Base64編碼)，並存到localStorage中
       this.bblob = canvas.toDataURL();
       console.log(this.bblob);
       canvas.toBlob((blob) => {
-        capturedBlob = blob; // 將截圖的 Blob 儲存到 capturedBlob 中
-        //this.bblob = blob; //這邊就是他的object，object才可以傳出去
+        //capturedBlob = blob; // 將截圖的 Blob 儲存到 capturedBlob 中
+        //object才可以傳出去
 
         //僅在此頁面中顯示
         // 將 Blob 轉換成臨時的 URL 並顯示
-        const blobUrl = URL.createObjectURL(capturedBlob);
-        capturedImage.src = blobUrl;
+        //const blobUrl = URL.createObjectURL(capturedBlob);
+        //capturedImage.src = blobUrl;
         //});
       });
-      /*const buf2str = (buf) => {
-        var bufView = new Uint16Array(buf);
-        var unis = "";
-        for (var i = 0; i < bufView.length; i++) {
-          unis = unis + String.fromCharCode(bufView[i]);
-        }
-        return unis;
-      };*/
     },
 
     sendImg() {},

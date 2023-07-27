@@ -117,7 +117,7 @@
               </v-col>
               <v-col cols="3" justify="center">
                 <v-img
-                  src="https://localhost:7098/imgs/messageImg/04.jpg"
+                  :src= "product.Img"
                   width="100%"
                   class="bg-grey-lighten-2"
                 ></v-img>
@@ -181,7 +181,7 @@
                   <p class="text-field-custom">數量：</p>
                 </v-col>
                 <v-col cols="3">
-                  <v-text-field v-model="foramount[index].Info.amount">
+                  <v-text-field v-model="foramount[index].Info.amount" readonly>
                     <template v-slot:append>
                       <v-btn @click="increment" variant="text" icon>
                         <v-icon size="small">mdi-plus</v-icon>
@@ -212,6 +212,8 @@
       </v-expansion-panels>
     </div>
     <!-- 動態新增-結束 -->
+    <hr>
+    <h2>Total:{{ TotalPrice() }}</h2>
   </v-container>
 </template>
 
@@ -243,7 +245,17 @@ export default {
       //更新localStorage
       localStorage.setItem("addItemList", JSON.stringify(this.products));
     },
-    updatedNum() {},
+    TotalPrice() {
+      let sum = 0;
+      console.log(this.products.length);
+
+      for(let i = 0; i < this.products.length ;i++){
+        let unitP = this.products[i].Info.unitprice;
+        let amount = this.products[i].Info.amount;
+        sum += (unitP * amount);
+      }
+      return sum;
+    },
   },
   mounted() {
     this.products = JSON.parse(localStorage.getItem("addItemList")) || [];
