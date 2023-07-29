@@ -271,7 +271,7 @@ export default {
     //查找Component
     const getComponent = async () => {
       try {
-        // 通过 Promise.all 發起多個fetch ///但還是太慢
+        // 通过 Promise.all 發起多個fetch
         const requests = [
           fetch(
             `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
@@ -296,7 +296,7 @@ export default {
         // 等待所有请求都完成
         const responses = await Promise.all(requests);
 
-        // 解析 API 返回的数据并更新 comId 对应的值
+        // 解析API回傳的數據並更新comId對應的值
         const data = await Promise.all(
           responses.map((response) => response.json())
         );
@@ -337,32 +337,29 @@ export default {
       //console.log("在子組件中" + this.imgData);
       this.$emit("sendimg-event");
       //寫入
-      //檢查編號，最新的Num是多少，若沒有就從1開始
-      //let currentNumber = parseInt(localStorage.getItem("currentNumber")) || 1;
-      //初始化List
+      //宣告List，如果localStorage已經有值就放入變數，若沒有就給一個空值。
       let ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
       //建立物件
       const Productdata = {
-        //Num: currentNumber, //再考慮一下
-        Img: localStorage.getItem("imgBlob"),
+        Img: localStorage.getItem("imgBlob"),//客製畫面截圖
         Info: {
-          unitprice: this.calculateSum(),
-          amount: this.amount,
-          type: 0,
+          unitprice: this.calculateSum(),//一組客製化的單價。用於填入CombindDetail的SubTotal欄位
+          amount: this.amount,//同一組客製化買了幾隻
+          type: 0,//屬於客製化還是固定式商品，此為客製化故選0。用於填入CombindDetail的Type欄位
         },
         ComDetail: [
           {
-            type: "CHead",
-            comId: this.comId.c_head_Id,
-            comPrice: this.head_mo_price + this.head_m_price,
-            moId: this.moId.headId,
-            moPrice: this.head_mo_price,
-            maId: this.maId.head_m_Id,
-            maPrice: this.head_m_price,
+            type: "CHead",//下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CHead
+            comId: this.comId.c_head_Id,//component的ID ex:400007。用於填入CombindDetail的CHead欄位
+            comPrice: this.head_mo_price + this.head_m_price,//component的價格
+            moId: this.moId.headId,//model的ID
+            moPrice: this.head_mo_price,//model的Price
+            maId: this.maId.head_m_Id,//material的ID
+            maPrice: this.head_m_price,//material的價格
           },
           {
-            type: "CBody",
-            comId: this.comId.c_body_Id,
+            type: "CBody",//下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CBody
+            comId: this.comId.c_body_Id,//component的ID ex:400015。用於填入CombindDetail的CBody欄位
             comPrice: this.body_mo_price + this.body_m_price,
             moId: this.moId.bodyId,
             moPrice: this.body_mo_price,
@@ -409,9 +406,10 @@ export default {
       };
       //把物件存到List
       ProdList.push(Productdata);
-      //存到localStorage
-      localStorage.setItem("addItemList", JSON.stringify(ProdList));
-      localStorage.removeItem("imgBlob");
+      //用setItem存到localStorage。("Key",value)
+      localStorage.setItem("addItemList", JSON.stringify(ProdList));//用於加入購物車的
+      //用removeItem("key")移除localStorage
+      localStorage.removeItem("imgBlob");//用於暫存截圖的
 
       alert("已加入購物車");
     },

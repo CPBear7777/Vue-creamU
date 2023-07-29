@@ -1,11 +1,11 @@
 <template>
   <div>
-    <!-- 在子组件上绑定自定义事件监听器，并在父组件中执行对应的方法 -->
+    <!-- 在子組件上榜定事件聆聽器，並在父組件中執行對應的方法 -->
     <ChildComponent
       @call-parent-method="handleChildEvent"
       :childValue="parentValue"
     />
-    <p>父组件得到的值：{{ parentValue }}</p>
+    <p>父組件得到的值：{{ parentValue }}</p>
   </div>
 </template>
 

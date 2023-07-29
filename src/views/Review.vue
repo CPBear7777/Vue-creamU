@@ -1,14 +1,16 @@
 <template>
   <h2>Product Review</h2>
   <v-container>
+    <!-- 評分統計 -->
     <v-card
       class="d-flex flex-column mx-auto py-8"
       elevation="10"
-      height="500"
-      width="360"
+      height="280"
+      width="700"
     >
-      <div class="d-flex justify-center mt-auto text-h5">Rating overview</div>
-
+    <v-row justify="center">
+      <v-col cols="6">
+        <div class="d-flex justify-center mt-auto text-h5">Rating overview</div>
       <div class="d-flex align-center flex-column my-auto">
         <div class="text-h2 mt-5">
           3.5
@@ -22,8 +24,9 @@
         ></v-rating>
         <div class="px-3">3,360 ratings</div>
       </div>
-
-      <v-list
+      </v-col>
+      <v-col cols="6">
+        <v-list
         bg-color="transparent"
         class="d-flex flex-column-reverse"
         density="compact"
@@ -49,9 +52,18 @@
           </template>
         </v-list-item>
       </v-list>
+      </v-col>
+    </v-row>
     </v-card>
+    <br>
+    <!--排序按鈕-->
+    <v-row  justify="center">
+      <v-col cols="auto">
+        <v-btn>我也要留言</v-btn>
+      </v-col>
+    </v-row>
+    <br>
     <div class="d-flex align-center flex-column">
-      <!--排序按鈕-->
       <v-row justify="center">
         <v-col cols="auto">
           <v-btn block rounded="xl">Highest rating</v-btn>

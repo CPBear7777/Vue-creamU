@@ -1,7 +1,7 @@
 <template>
   <div>
-    <button @click="callParentMethod">点击触发父组件方法并接收返回值</button>
-    <p>子组件得到的值：{{ childValue }}</p>
+    <button @click="callParentMethod">觸發父組件的方法並接收回傳值</button>
+    <p>子組件得到的值：{{ childValue }}</p>
   </div>
 </template>
 
@@ -9,17 +9,16 @@
 export default {
   data() {
     return {
-      childValue: "", // 存储父组件返回的值
+      childValue: "", // 儲存父組件的回傳值
     };
   },
   methods: {
     callParentMethod() {
-      // 触发自定义事件，并传递数据给父组件
+      // 觸發自訂義的事件，並把數據傳到父組件
       this.$emit("call-parent-method");
     },
   },
-  // 接收父组件传递回来的值
-  // 这里的 `value` 就是父组件传递过来的数据
+  // 接收父組件傳來的值
   props: ["childValue"],
 };
 </script>
