@@ -122,6 +122,12 @@
     <!-- 動態新增-結束 -->
     <hr>
     <h2>Total:{{ TotalPrice() }}</h2>
+    <v-row justify="right">
+      <v-col >
+        <v-btn size="x-large"  color="#e5d2ab" @click="CustomizedPcheckout">Check out</v-btn>
+
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -165,10 +171,44 @@ export default {
       }
       return sum;
     },
+    async SaveToCombineDetail(){
+      const data = this.products.map(product => {
+        return{
+          CHead: this.product.CHead,
+          CBody:this.product.CBody,
+          CLHand:this.product.CLHand,
+          CRHand:this.product.CRHand,
+          CLFoot:this.product.CLFoot,
+          CRFoot:this.product.CRFoot,
+          SubTotal:this.product.Info.unitprice,
+          Type:this.product.Info.type,
+        }
+      });
+      try{
+        fetch(`/api/CombineDetails`,{
+        method: POST,
+        //Content-Type為application/json，表示以JSON回傳給API
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if(!reaponse.ok){
+        throw new Error(`Network response was not ok`);
+      }
+      const result = await Response.json();
+      }
+      catch(error){
+        console.error(`Fetch Error`,error);
+      }
+
+    }
   },
   mounted() {
     this.products = JSON.parse(localStorage.getItem("addItemList")) || [];
   },
+
 };
 </script>
 
