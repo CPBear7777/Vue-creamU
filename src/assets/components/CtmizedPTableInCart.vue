@@ -4,15 +4,23 @@
       <h3>Customized Product List</h3>
       <hr />
       <v-row justify="center">
-        <v-col cols="auto">
-          <div v-if="products.length == 0">
+        <div v-if="products.length == 0">
+          <v-col cols="auto" align="center">
             <br />
             <br />
             <br />
-            <v-btn prepend-icon="mdi-cart-arrow-down">Buy Now</v-btn>
+            <v-btn
+              href="http://localhost:5173/WebGL2"
+              prepend-icon="mdi-cart-arrow-down"
+              size="x-large"
+              color="#B7582A"
+              >Buy Now</v-btn
+            >
+          </v-col>
+          <v-col cols="12">
             <h3>Opps! No Product In Shopping Cart!</h3>
-          </div>
-        </v-col>
+          </v-col>
+        </div>
       </v-row>
 
       <v-expansion-panels>
@@ -25,7 +33,7 @@
               </v-col>
               <v-col cols="3" justify="center">
                 <v-img
-                  :src= "product.Img"
+                  :src="product.Img"
                   width="100%"
                   class="bg-grey-lighten-2"
                 ></v-img>
@@ -64,15 +72,22 @@
                       <tr v-for="index in 6" :key="index">
                         <td class="text-right">
                           {{ product.ComDetail[index - 1].type }}
-                        </td><!--部位名稱-->
-                        <td>{{ product.ComDetail[index - 1].comId }}</td><!--該部位的componentId-->
-                        <td>{{ product.ComDetail[index - 1].comPrice }}</td><!--該部位的component的價格-->
+                        </td>
+                        <!--部位名稱-->
+                        <td>{{ product.ComDetail[index - 1].comId }}</td>
+                        <!--該部位的componentId-->
+                        <td>{{ product.ComDetail[index - 1].comPrice }}</td>
+                        <!--該部位的component的價格-->
                         <td>=</td>
-                        <td>{{ product.ComDetail[index - 1].moId }}</td><!--該部位的modelId-->
-                        <td>{{ product.ComDetail[index - 1].moPrice }}</td><!--該部位的model的價格-->
+                        <td>{{ product.ComDetail[index - 1].moId }}</td>
+                        <!--該部位的modelId-->
+                        <td>{{ product.ComDetail[index - 1].moPrice }}</td>
+                        <!--該部位的model的價格-->
                         <td>+</td>
-                        <td>{{ product.ComDetail[index - 1].maId }}</td><!--該部位的materilaId-->
-                        <td>{{ product.ComDetail[index - 1].maPrice }}</td><!--該部位的materila的價格-->
+                        <td>{{ product.ComDetail[index - 1].maId }}</td>
+                        <!--該部位的materilaId-->
+                        <td>{{ product.ComDetail[index - 1].maPrice }}</td>
+                        <!--該部位的materila的價格-->
                       </tr>
                     </tbody>
                   </v-table>
@@ -120,24 +135,30 @@
       </v-expansion-panels>
     </div>
     <!-- 動態新增-結束 -->
-    <hr>
+    <hr />
     <h2>Total:{{ TotalPrice() }}</h2>
     <v-row justify="right">
-      <v-col >
-        <v-btn size="x-large"  color="#e5d2ab" @click="CustomizedPcheckout">Check out</v-btn>
-
+      <v-col>
+        <v-btn
+          v-if="products.length != 0"
+          size="x-large"
+          color="#e5d2ab"
+          @click="SaveToCombineDetail"
+          >Check out</v-btn
+        >
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+let routerport = "https://localhost:7011/";
 export default {
   data() {
     return {
       //先在此宣告要存放的變數位置
-      products: JSON.parse(localStorage.getItem("addItemList")) || [],//此用來取整個localStorate
-      foramount: JSON.parse(localStorage.getItem("addItemList")) || 1,//此用來取購買數量用，會另外取是因為想要在購物車裡可以動態更改數量
+      products: JSON.parse(localStorage.getItem("addItemList")) || [], //此用來取整個localStorate
+      foramount: JSON.parse(localStorage.getItem("addItemList")) || 1, //此用來取購買數量用，會另外取是因為想要在購物車裡可以動態更改數量
       value: 1,
       //products: ProdList,
     };
@@ -164,51 +185,59 @@ export default {
       let sum = 0;
       console.log(this.products.length);
 
-      for(let i = 0; i < this.products.length ;i++){
+      for (let i = 0; i < this.products.length; i++) {
         let unitP = this.products[i].Info.unitprice;
         let amount = this.products[i].Info.amount;
-        sum += (unitP * amount);
+        sum += unitP * amount;
       }
       return sum;
     },
-    async SaveToCombineDetail(){
-      const data = this.products.map(product => {
-        return{
-          CHead: this.product.CHead,
-          CBody:this.product.CBody,
-          CLHand:this.product.CLHand,
-          CRHand:this.product.CRHand,
-          CLFoot:this.product.CLFoot,
-          CRFoot:this.product.CRFoot,
-          SubTotal:this.product.Info.unitprice,
-          Type:this.product.Info.type,
-        }
+    async SaveToCombineDetail() {
+      const data = this.products.map((product) => {
+        return {
+          Chead: product.ComDetail[0].comId,
+          Cbody: product.ComDetail[1].comId,
+          Clhand: product.ComDetail[2].comId,
+          Crhand: product.ComDetail[3].comId,
+          Clfoot: product.ComDetail[4].comId,
+          Crfoot: product.ComDetail[5].comId,
+          SubTotal: product.Info.unitprice,
+          Type: product.Info.type,
+        };
       });
-      try{
-        fetch(`/api/CombineDetails`,{
-        method: POST,
-        //Content-Type為application/json，表示以JSON回傳給API
-        headers:{
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+      //const Comdata = new FormData(data);
 
-      if(!reaponse.ok){
-        throw new Error(`Network response was not ok`);
-      }
-      const result = await Response.json();
-      }
-      catch(error){
-        console.error(`Fetch Error`,error);
-      }
+      // try {
+      //   fetch(`/api/CombineDetails`, {
+      //     method: POST,
+      //     //Content-Type為application/json，表示以JSON回傳給API
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(data),
+      //   });
 
-    }
+      //   if (!reaponse.ok) {
+      //     throw new Error(`Network response was not ok`);
+      //   }+
+      //   const result = await Response.json();
+      // } catch (error) {
+      //   console.error(`Fetch Error`, error);
+      // }
+      console.log(data);
+      //console.log(Comdata);
+      const response = await fetch(
+        `${routerport}api/saveCombineDetail?combineDetail=${JSON.stringify(
+          data
+        )}`
+      );
+      const result = await response.text();
+      console.log(result);
+    },
   },
   mounted() {
     this.products = JSON.parse(localStorage.getItem("addItemList")) || [];
   },
-
 };
 </script>
 

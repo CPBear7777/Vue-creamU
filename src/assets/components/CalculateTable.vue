@@ -133,6 +133,8 @@ import { ref } from "vue";
 
 const components = [];
 
+let routerport = "https://localhost:7011/";
+
 export default {
   data() {
     //初始值
@@ -239,17 +241,16 @@ export default {
     };
     //API:載入model和material
     const loadDB = async () => {
-      const res = await fetch(`https://localhost:7011/api/Models`);
+      const res = await fetch(`${routerport}api/Models`);
       (await res.json()).forEach((element) => {
         this.datas[element.modelName] = element;
       });
-      const res2 = await fetch(`https://localhost:7011/api/Materials`);
+      const res2 = await fetch(`${routerport}api/Materials`);
       (await res2.json()).forEach((element) => {
         this.datas[element.materialName] = element;
       });
 
       const intervalId = setInterval(() => {
-
         const headField = document.getElementById("head");
 
         if (!headField) return;
@@ -260,7 +261,6 @@ export default {
     loadDB();
   },
   updated() {
-    console.log("updated有沒有在動?");
     // 將 Blob 轉換成臨時的 URL 並顯示
     // const blobUrl = URL.createObjectURL(localStorage.getIte("imgBlob"));
 
@@ -274,22 +274,22 @@ export default {
         // 通过 Promise.all 發起多個fetch
         const requests = [
           fetch(
-            `https://localhost:7011/api/Components/model/${this.headId}/material/${this.head_m_Id}`
+            `${routerport}api/Components/model/${this.headId}/material/${this.head_m_Id}`
           ),
           fetch(
-            `https://localhost:7011/api/Components/model/${this.bodyId}/material/${this.body_m_Id}`
+            `${routerport}api/Components/model/${this.bodyId}/material/${this.body_m_Id}`
           ),
           fetch(
-            `https://localhost:7011/api/Components/model/${this.rhandId}/material/${this.rhand_m_Id}`
+            `${routerport}api/Components/model/${this.rhandId}/material/${this.rhand_m_Id}`
           ),
           fetch(
-            `https://localhost:7011/api/Components/model/${this.lhandId}/material/${this.lhand_m_Id}`
+            `${routerport}api/Components/model/${this.lhandId}/material/${this.lhand_m_Id}`
           ),
           fetch(
-            `https://localhost:7011/api/Components/model/${this.rfootId}/material/${this.rfoot_m_Id}`
+            `${routerport}api/Components/model/${this.rfootId}/material/${this.rfoot_m_Id}`
           ),
           fetch(
-            `https://localhost:7011/api/Components/model/${this.lfootId}/material/${this.lfoot_m_Id}`
+            `${routerport}api/Components/model/${this.lfootId}/material/${this.lfoot_m_Id}`
           ),
         ];
 
@@ -341,25 +341,25 @@ export default {
       let ProdList = JSON.parse(localStorage.getItem("addItemList")) || [];
       //建立物件
       const Productdata = {
-        Img: localStorage.getItem("imgBlob"),//客製畫面截圖
+        Img: localStorage.getItem("imgBlob"), //客製畫面截圖
         Info: {
-          unitprice: this.calculateSum(),//一組客製化的單價。用於填入CombindDetail的SubTotal欄位
-          amount: this.amount,//同一組客製化買了幾隻
-          type: 0,//屬於客製化還是固定式商品，此為客製化故選0。用於填入CombindDetail的Type欄位
+          unitprice: this.calculateSum(), //一組客製化的單價。用於填入CombindDetail的SubTotal欄位
+          amount: this.amount, //同一組客製化買了幾隻
+          type: 0, //屬於客製化還是固定式商品，此為客製化故選0。用於填入CombindDetail的Type欄位
         },
         ComDetail: [
           {
-            type: "CHead",//下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CHead
-            comId: this.comId.c_head_Id,//component的ID ex:400007。用於填入CombindDetail的CHead欄位
-            comPrice: this.head_mo_price + this.head_m_price,//component的價格
-            moId: this.moId.headId,//model的ID
-            moPrice: this.head_mo_price,//model的Price
-            maId: this.maId.head_m_Id,//material的ID
-            maPrice: this.head_m_price,//material的價格
+            type: "CHead", //下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CHead
+            comId: this.comId.c_head_Id, //component的ID ex:400007。用於填入CombindDetail的CHead欄位
+            comPrice: this.head_mo_price + this.head_m_price, //component的價格
+            moId: this.moId.headId, //model的ID
+            moPrice: this.head_mo_price, //model的Price
+            maId: this.maId.head_m_Id, //material的ID
+            maPrice: this.head_m_price, //material的價格
           },
           {
-            type: "CBody",//下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CBody
-            comId: this.comId.c_body_Id,//component的ID ex:400015。用於填入CombindDetail的CBody欄位
+            type: "CBody", //下方資料屬於 資料庫資料表CombindDetail 的欄位名稱：CBody
+            comId: this.comId.c_body_Id, //component的ID ex:400015。用於填入CombindDetail的CBody欄位
             comPrice: this.body_mo_price + this.body_m_price,
             moId: this.moId.bodyId,
             moPrice: this.body_mo_price,
@@ -407,9 +407,9 @@ export default {
       //把物件存到List
       ProdList.push(Productdata);
       //用setItem存到localStorage。("Key",value)
-      localStorage.setItem("addItemList", JSON.stringify(ProdList));//用於加入購物車的
+      localStorage.setItem("addItemList", JSON.stringify(ProdList)); //用於加入購物車的
       //用removeItem("key")移除localStorage
-      localStorage.removeItem("imgBlob");//用於暫存截圖的
+      localStorage.removeItem("imgBlob"); //用於暫存截圖的
 
       alert("已加入購物車");
     },
@@ -432,7 +432,7 @@ export default {
   },
   created() {
     const sum = this.calculateSum();
-    console.log(sum);
+    //console.log(sum);
   },
 };
 </script>
